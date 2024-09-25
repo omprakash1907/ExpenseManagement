@@ -1,32 +1,30 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
+const User = require('../models/User');
 
-const authMiddleware = async (req, res, next) => {
+// Protect middleware to secure routes
+exports.protect = async (req, res, next) => {
   let token;
-
-  // Check if the token is provided in the Authorization header
+  
+  // Check if the request has an Authorization header with a Bearer token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      // Get token from the Authorization header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verify the token using JWT_SECRET
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Attach the user to the request object (without the password)
-      req.user = await User.findById(decoded.userId).select('-password');
-
-      // Proceed to the next middleware or route handler
-      next();
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      return res.status(401).json({ message: 'Not authorized, token failed' });
-    }
+    token = req.headers.authorization.split(' ')[1]; // Extract the token
   }
 
+  // If no token is found, return 401 (Unauthorized)
   if (!token) {
     return res.status(401).json({ message: 'Not authorized, no token' });
   }
-};
 
-module.exports = authMiddleware;
+  try {
+    // Verify token and decode the payload
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Find the user by decoded ID and attach it to the request object
+    req.user = await User.findById(decoded.id).select('-password'); // Exclude the password
+
+    // Proceed to the next middleware or route handler
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Not authorized, token failed' });
+  }
+};

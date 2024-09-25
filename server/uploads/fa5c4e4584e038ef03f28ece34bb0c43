@@ -1,0 +1,4 @@
+﻿amount,description,category,paymentMethod,date
+100,Dinner,Food,cash,10-09-2024
+200,Rent,Housing,credit,01-09-2024
+50,Groceries,Food,cash,02-09-2024
