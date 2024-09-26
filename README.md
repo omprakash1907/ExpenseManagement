@@ -38,7 +38,7 @@ The **Expense Management System** is a full-stack web application that allows us
 
 ## 🚀 Getting Started
 
-For Better user experience Login with :
+### 🔑 User Login Information
 - Email : om@gmail.com
 - Password : 123123
 
@@ -65,4 +65,9 @@ Before you begin, make sure you have:
 3. **Install backend dependencies**:
    - cd server
    - npm run dev
-4. 
+## 🏃‍♂️ Running the Project
+Frontend
+- npm start
+
+Backend
+- Npm run dev
