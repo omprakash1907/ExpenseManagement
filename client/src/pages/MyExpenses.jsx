@@ -36,7 +36,7 @@ const MyExpenses = () => {
       description: expense.description,
       category: expense.category,
       paymentMethod: expense.paymentMethod,
-      date: expense.date,
+      date: expense.date.split('T')[0], // Ensure the date is formatted for <input type="date">
     });
   };
 
@@ -87,6 +87,7 @@ const MyExpenses = () => {
         )
       );
       setSelectedExpenses([]);
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting expenses:", error);
     }
@@ -218,26 +219,103 @@ const MyExpenses = () => {
                   onChange={() => handleCheckboxChange(expense._id)}
                 />
               </td>
-              <td className="p-4 border">{expense.description}</td>
-              <td className="p-4 border">{`$${expense.amount}`}</td>
-              <td className="p-4 border">{expense.category}</td>
               <td className="p-4 border">
-                {new Date(expense.date).toLocaleDateString()}
+                {editExpenseId === expense._id ? (
+                  <input
+                    type="text"
+                    name="description"
+                    value={editedData.description || ""}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  expense.description
+                )}
               </td>
-              <td className="p-4 border">{expense.paymentMethod}</td>
               <td className="p-4 border">
-                <button
-                  className="bg-yellow-500 text-white px-2 py-1 rounded"
-                  onClick={() => handleEditClick(expense)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-500 text-white px-2 py-1 rounded ml-2"
-                  onClick={() => handleSingleDelete(expense._id)}
-                >
-                  Delete
-                </button>
+                {editExpenseId === expense._id ? (
+                  <input
+                    type="number"
+                    name="amount"
+                    value={editedData.amount || ""}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  `$${expense.amount}`
+                )}
+              </td>
+              <td className="p-4 border">
+                {editExpenseId === expense._id ? (
+                  <input
+                    type="text"
+                    name="category"
+                    value={editedData.category || ""}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  expense.category
+                )}
+              </td>
+              <td className="p-4 border">
+                {editExpenseId === expense._id ? (
+                  <input
+                    type="date"
+                    name="date"
+                    value={editedData.date || ""}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  new Date(expense.date).toLocaleDateString()
+                )}
+              </td>
+              <td className="p-4 border">
+                {editExpenseId === expense._id ? (
+                  <input
+                    type="text"
+                    name="paymentMethod"
+                    value={editedData.paymentMethod || ""}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md"
+                  />
+                ) : (
+                  expense.paymentMethod
+                )}
+              </td>
+              <td className="p-4 border">
+                {editExpenseId === expense._id ? (
+                  <>
+                    <button
+                      className="bg-green-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleSaveClick(expense._id)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="bg-gray-500 text-white px-2 py-1 rounded ml-2"
+                      onClick={() => setEditExpenseId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="bg-yellow-500 text-white px-2 py-1 rounded"
+                      onClick={() => handleEditClick(expense)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-2 py-1 rounded ml-2"
+                      onClick={() => handleSingleDelete(expense._id)}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
